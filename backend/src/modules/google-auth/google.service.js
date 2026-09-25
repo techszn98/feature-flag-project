@@ -1,14 +1,12 @@
+const mongoose = require('mongoose');
 const User = require("../auth/user.model");
-const { generateToken } = require("../../utils/jwt");
+const RefreshToken = require("../../models/refreshToken.model");
+const { generateAccessToken, generateRefreshToken } = require("../../utils/token");
+const { hashSha256 } = require("../../utils/crypto");
+const emailService = require("../../services/email/email.service");
 const googleConfig = require("../../config/google");
 const { AppError } = require("../../middleware/error.middleware");
-
-const toPublicUser = (user) => ({
-  id: user._id,
-  email: user.email,
-  role: user.role,
-  authProvider: user.authProvider,
-});
+const { toPublicUser } = require("../auth/auth.utils");
 
 const authenticateGoogleUser = async ({ idToken }) => {
   if (!idToken) {
@@ -41,10 +39,26 @@ const authenticateGoogleUser = async ({ idToken }) => {
     if (!existingUser.email) {
       existingUser.email = normalizedEmail;
     }
+    existingUser.emailVerified = true;
     await existingUser.save();
 
-    const token = generateToken(existingUser);
-    return { token, user: toPublicUser(existingUser) };
+    const accessToken = generateAccessToken(existingUser);
+    const refreshToken = generateRefreshToken(existingUser);
+
+    if (mongoose.connection.readyState === 1) {
+      await RefreshToken.create({
+        userId: existingUser._id,
+        tokenHash: hashSha256(refreshToken),
+        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      });
+    }
+
+    return {
+      token: accessToken,
+      accessToken,
+      refreshToken,
+      user: toPublicUser(existingUser),
+    };
   }
 
   const newUser = await User.create({
@@ -52,10 +66,30 @@ const authenticateGoogleUser = async ({ idToken }) => {
     googleId: googleUserId,
     authProvider: "google",
     role: "Client",
+    emailVerified: true,
   });
 
-  const token = generateToken(newUser);
-  return { token, user: toPublicUser(newUser) };
+  emailService.sendGoogleWelcomeEmail({ to: newUser.email }).catch((err) => {
+    console.error("Failed to send Google welcome email:", err);
+  });
+
+  const accessToken = generateAccessToken(newUser);
+  const refreshToken = generateRefreshToken(newUser);
+
+  if (mongoose.connection.readyState === 1) {
+    await RefreshToken.create({
+      userId: newUser._id,
+      tokenHash: hashSha256(refreshToken),
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    });
+  }
+
+  return {
+    token: accessToken,
+    accessToken,
+    refreshToken,
+    user: toPublicUser(newUser),
+  };
 };
 
 module.exports = { authenticateGoogleUser, toPublicUser };

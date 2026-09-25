@@ -1,6 +1,7 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
 
+process.env.NODE_ENV = "test";
 process.env.MONGO_URI = "mongodb://localhost:27017/test";
 process.env.JWT_SECRET = "test-secret";
 

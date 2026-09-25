@@ -1,5 +1,5 @@
 const User = require('../modules/auth/user.model');
-const { verifyToken } = require('../utils/jwt');
+const { verifyAccessToken } = require('../utils/token');
 const { AppError } = require('./error.middleware');
 
 const protect = async (req, res, next) => {
@@ -11,7 +11,15 @@ const protect = async (req, res, next) => {
     }
 
     const token = authHeader.split(' ')[1];
-    const decoded = verifyToken(token);
+    let decoded;
+    try {
+      decoded = verifyAccessToken(token);
+    } catch (err) {
+      if (err.name === 'TokenExpiredError') {
+        throw new AppError('Token has expired. Please refresh your token or log in again.', 401);
+      }
+      throw new AppError('Invalid or malformed token', 401);
+    }
 
     const user = await User.findById(decoded.id);
     if (!user) throw new AppError('User belonging to this token no longer exists', 401);
