@@ -1,0 +1,585 @@
+{
+  "info": {
+    "_postman_id": "f4ad3096-4080-4788-8d7c-b6356312bd38",
+    "name": "Feature-Flage-API",
+    "description": "Auth and Projects endpoints. Run \"Auth\" first (register + login saves {{token}}), then \"Projects\". \"Project Ownership\" registers a second user and shows they get 404 on the first user's project.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "56601917",
+    "_collection_link": "https://go.postman.co/collection/56601917-f4ad3096-4080-4788-8d7c-b6356312bd38?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "auth",
+      "item": [
+        {
+          "name": "register",
+          "item": [
+            {
+              "name": "Register",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"usera@example.com\",\n  \"password\": \"password123\"\n}",
+                  "options": {
+                    "raw": {
+                      "headerFamily": "json",
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/register",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "register"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "login",
+          "item": [
+            {
+              "name": "Login",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"usera@example.com\",\n  \"password\": \"password123\"\n}",
+                  "options": {
+                    "raw": {
+                      "headerFamily": "json",
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "login"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "me",
+          "item": [
+            {
+              "name": "Me",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{bearerToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/auth/me",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "me"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "google-auth",
+      "item": [
+        {
+          "name": "google-auth",
+          "request": {
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "scope",
+                  "value": "openid email profile",
+                  "type": "string"
+                },
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://oauth2.googleapis.com/token",
+                  "type": "string"
+                },
+                {
+                  "key": "authUrl",
+                  "value": "https://accounts.google.com/o/oauth2/v2/auth",
+                  "type": "string"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "authorization_code",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idToken\": \"eyJhbGciOiJSUzI1NiIsImtpZCI6ImYxMGY40ZjMzY2Q4NWMyNzEiLCOWEyc2h1NTc2a2Q0ampkbWVqYmJuZnAuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI5Nzc4NTkzMTcyODEtMTFvaThrajVqOWEyc2h1NTc2a2Q0ampkbWVqYmJuZnAuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMTEyNTgwNTc5OTY4MjY0MjY5NDQiLCJlbWFpbCI6Im5uYWt3ZXByZWNpb3VzQGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJhdF9oYXNoIjoiMXo5Zi1BTUJibzRRSHU0VXNISFZPUSIsIm5hbWUiOiJQcmVjaW91cyBubmFrd2UiLCJwaWN0dXJlIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUNnOG9jSlBhTHhwamZuQ1pRYWdkOExwQVpjWENxQ2hZZzVkYUdEeC1PRXNJV0w3WXBoLWZ5cm49czk2LWMiLCJnaXZlbl9uYW1lIjoiUHJlY2lvdXMiLCJmYW1pbHlfbmFtZSI6Im5uYWt3ZSIsImlhdCI6MTc5MDI3Mzk0NSwiZXhwIjoxNzkwMjc3NTQ1fQ.nSwVzIla5FyftyCWU_n6gif7CoFENmERETHmnv_2QJSE3RfyMOcslKkVCdmGKlQuMiGK63rMVfWR-juyUWqkWRAC58Jco3mWKNAX6fZbWqlor9-5tjaXrhgkHMXGRDrJGt28efdPHUxQNx7AdP3La3fI7tzO-vGLK8I2LBFzck1fs15pkD6nY4VyvSqa14a6wLzudV_15nbVcdKTk8SU9iiJqMeJ6f8JWqo4BXSHz15Fkd1kmMC1S2SmPmETARekYIKxDjpKq2BopArNTAJIN9aJZCESjKrC6feNndVfO6cxLeDNfq2cqeXvSufNfhiQ1gIzOIVDMzIJc2vwppB3SA\"\n}",
+              "options": {
+                "raw": {
+                  "headerFamily": "json",
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/google-auth",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "google-auth"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "projects",
+      "item": [
+        {
+          "name": "{projectId}",
+          "item": [
+            {
+              "name": "environments",
+              "item": [
+                {
+                  "name": "getAllEnvironment(Project)ByID",
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{bearerToken}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/projects/:projectId/environments/",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "projects",
+                        ":projectId",
+                        "environments",
+                        ""
+                      ],
+                      "variable": [
+                        {
+                          "key": "projectId",
+                          "value": ""
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "createEnviroments",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"projectId\": \"6ab49dce9d23c0fc7d6064eb\",\n  \"name\": \"\",\n  \"type\": \"\"\n}",
+                      "options": {
+                        "raw": {
+                          "headerFamily": "json",
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/projects/:projectId/environments",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "projects",
+                        ":projectId",
+                        "environments"
+                      ],
+                      "variable": [
+                        {
+                          "key": "projectId",
+                          "value": "6ab49dce9d23c0fc7d6064eb"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "Get Project",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{bearerToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/projects/:projectId",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "projects",
+                    ":projectId"
+                  ],
+                  "variable": [
+                    {
+                      "key": "projectId",
+                      "value": ""
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update Project",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{bearerToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Project One (renamed)\",\n  \"description\": \"Updated description\"\n}",
+                  "options": {
+                    "raw": {
+                      "headerFamily": "json",
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/projects/:projectId",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "projects",
+                    ":projectId"
+                  ],
+                  "variable": [
+                    {
+                      "key": "projectId",
+                      "value": ""
+                    }
+                  ]
+                },
+                "description": "Any of name, slug, description. Renaming keeps the slug unless slug is sent."
+              },
+              "response": []
+            },
+            {
+              "name": "Delete Project",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{bearerToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/projects/:projectId",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "projects",
+                    ":projectId"
+                  ],
+                  "variable": [
+                    {
+                      "key": "projectId",
+                      "value": ""
+                    }
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Create Project",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Project One\",\n  \"slug\": \"project-one\",\n  \"description\": \"Main web app\"\n}",
+              "options": {
+                "raw": {
+                  "headerFamily": "json",
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/projects",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "projects"
+              ]
+            },
+            "description": "slug is optional; if omitted it is generated from name. ownerId is always the logged-in user and cannot be sent."
+          },
+          "response": []
+        },
+        {
+          "name": "List My Projects",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/projects",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "projects"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "health",
+      "item": [
+        {
+          "name": "Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "health"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "/",
+      "item": [
+        {
+          "name": "getEnvironmentByID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ""
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "environments",
+      "item": [
+        {
+          "name": "{environmentID}",
+          "item": [
+            {
+              "name": "updateEnvironment",
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/environments/:environmentID",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "environments",
+                    ":environmentID"
+                  ],
+                  "variable": [
+                    {
+                      "key": "environmentID",
+                      "value": ""
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "deleteEnvironment",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{bearerToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/environments/:environmentID",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "environments",
+                    ":environmentID"
+                  ],
+                  "variable": [
+                    {
+                      "key": "environmentID",
+                      "value": ""
+                    }
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api/v1"
+    }
+  ]
+}
