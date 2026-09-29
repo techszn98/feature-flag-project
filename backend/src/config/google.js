@@ -1,8 +1,9 @@
-const { OAuth2Client } = require("google-auth-library");
-const { readEnv } = require("./env");
+require("dotenv").config();
 
-const googleClientId = readEnv("GOOGLE_CLIENT_ID");
-const googleClientSecret = readEnv("GOOGLE_CLIENT_SECRET");
+const { OAuth2Client } = require("google-auth-library");
+
+const googleClientId = process.env.GOOGLE_CLIENT_ID;
+const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
 const googleRedirectUri = process.env.GOOGLE_REDIRECT_URI;
 
 if (!googleClientId) {

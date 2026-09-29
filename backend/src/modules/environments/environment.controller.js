@@ -1,4 +1,4 @@
-const environmentService = require("./environment.service");
+const environmentService = require('./environment.service');
 
 // Same success/error response shape everywhere, matching the doc's contract.
 async function createEnvironment(req, res, next) {
@@ -15,7 +15,7 @@ async function createEnvironment(req, res, next) {
 
     res.status(201).json({
       success: true,
-      message: "Environment created successfully",
+      message: 'Environment created successfully',
       data: environment,
     });
   } catch (err) {
@@ -26,14 +26,11 @@ async function createEnvironment(req, res, next) {
 async function listEnvironments(req, res, next) {
   try {
     const { projectId } = req.params;
-    const environments = await environmentService.listEnvironments(
-      projectId,
-      req.user.id,
-    );
+    const environments = await environmentService.listEnvironments(projectId);
 
     res.status(200).json({
       success: true,
-      message: "Environments retrieved successfully",
+      message: 'Environments retrieved successfully',
       data: environments,
     });
   } catch (err) {
@@ -43,22 +40,19 @@ async function listEnvironments(req, res, next) {
 
 async function getEnvironment(req, res, next) {
   try {
-    const environment = await environmentService.getEnvironmentById(
-      req.params.id,
-      req.user.id,
-    );
+    const environment = await environmentService.getEnvironmentById(req.params.id);
 
     if (!environment) {
       return res.status(404).json({
         success: false,
-        message: "Environment not found",
+        message: 'Environment not found',
         data: null,
       });
     }
 
     res.status(200).json({
       success: true,
-      message: "Environment retrieved successfully",
+      message: 'Environment retrieved successfully',
       data: environment,
     });
   } catch (err) {
@@ -68,23 +62,19 @@ async function getEnvironment(req, res, next) {
 
 async function updateEnvironment(req, res, next) {
   try {
-    const environment = await environmentService.updateEnvironment(
-      req.params.id,
-      req.body,
-      req.user.id,
-    );
+    const environment = await environmentService.updateEnvironment(req.params.id, req.body, req.user.id);
 
     if (!environment) {
       return res.status(404).json({
         success: false,
-        message: "Environment not found",
+        message: 'Environment not found',
         data: null,
       });
     }
 
     res.status(200).json({
       success: true,
-      message: "Environment updated successfully",
+      message: 'Environment updated successfully',
       data: environment,
     });
   } catch (err) {
@@ -94,22 +84,19 @@ async function updateEnvironment(req, res, next) {
 
 async function deleteEnvironment(req, res, next) {
   try {
-    const environment = await environmentService.deleteEnvironment(
-      req.params.id,
-      req.user.id,
-    );
+    const environment = await environmentService.deleteEnvironment(req.params.id, req.user.id);
 
     if (!environment) {
       return res.status(404).json({
         success: false,
-        message: "Environment not found",
+        message: 'Environment not found',
         data: null,
       });
     }
 
     res.status(200).json({
       success: true,
-      message: "Environment deleted successfully",
+      message: 'Environment deleted successfully',
       data: null,
     });
   } catch (err) {
