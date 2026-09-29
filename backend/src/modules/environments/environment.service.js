@@ -1,4 +1,5 @@
 const Environment = require('./environment.model');
+const Project = require('../project/project.model');
 
 // Create a new environment (a new "room") inside a project.
 async function createEnvironment({ projectId, name, type, userId }) {
@@ -12,27 +13,28 @@ async function createEnvironment({ projectId, name, type, userId }) {
 }
 
 // List every environment for one project.
-async function listEnvironments(projectId) {
+async function listEnvironments(projectId, userId) {
+  const project = await Project.findOne({ _id: projectId, createdBy: userId });
+  if (!project) return null; // caller treats this as "not found", not "empty list"
+
   return Environment.find({ projectId });
 }
 
-// Get one environment by its id.
-async function getEnvironmentById(id) {
-  return Environment.findById(id);
+// List every environment for one project.
+async function getEnvironmentById(id, userId) {
+  return Environment.findOne({ _id: id, createdBy: userId });
 }
 
-// Update an environment's name (type is usually locked once created).
-async function updateEnvironment(id, updates) {
-  return Environment.findByIdAndUpdate(
-    id,
-    { name: updates.name },
-    { new: true, runValidators: true }
+async function updateEnvironment(id, updates, userId) {
+  return Environment.findOneAndUpdate(
+    { _id: id, createdBy: userId },
+    { name: updates.name, type: updates.type },
+    { returnDocument: 'after', runValidators: true }
   );
 }
 
-// Delete an environment.
-async function deleteEnvironment(id) {
-  return Environment.findByIdAndDelete(id);
+async function deleteEnvironment(id, userId) {
+  return Environment.findOneAndDelete({ _id: id, createdBy: userId });
 }
 
 module.exports = {

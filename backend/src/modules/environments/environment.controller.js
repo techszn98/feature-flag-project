@@ -62,7 +62,7 @@ async function getEnvironment(req, res, next) {
 
 async function updateEnvironment(req, res, next) {
   try {
-    const environment = await environmentService.updateEnvironment(req.params.id, req.body);
+    const environment = await environmentService.updateEnvironment(req.params.id, req.body, req.user.id);
 
     if (!environment) {
       return res.status(404).json({
@@ -84,7 +84,7 @@ async function updateEnvironment(req, res, next) {
 
 async function deleteEnvironment(req, res, next) {
   try {
-    const environment = await environmentService.deleteEnvironment(req.params.id);
+    const environment = await environmentService.deleteEnvironment(req.params.id, req.user.id);
 
     if (!environment) {
       return res.status(404).json({
