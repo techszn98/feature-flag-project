@@ -1,0 +1,838 @@
+openapi: 3.0.3
+info:
+  title: Feature Flag API
+  version: 1.0.0
+  description: >-
+    Current API contract for authentication, projects, environments, feature
+    flags, identities, and environment-key-authenticated evaluation.
+servers:
+  - url: http://localhost:3000/api/v1
+tags:
+  - name: Health
+  - name: Authentication
+  - name: Projects
+  - name: Environments
+  - name: Environment keys
+  - name: Evaluation
+  - name: Identities
+  - name: Flags
+paths:
+  /health:
+    get:
+      tags: [Health]
+      summary: Check process liveness
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+  /auth/register:
+    post:
+      tags: [Authentication]
+      summary: Register an account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Credentials"
+      responses:
+        "201":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /auth/verify-email:
+    post:
+      tags: [Authentication]
+      summary: Verify an email address
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EmailOtp"
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /auth/resend-otp:
+    post:
+      tags: [Authentication]
+      summary: Request another verification OTP
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EmailBody"
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /auth/login:
+    post:
+      tags: [Authentication]
+      summary: Log in with email and password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Credentials"
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /auth/google:
+    post:
+      tags: [Authentication]
+      summary: Sign in with a Google ID token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GoogleToken"
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /google-auth:
+    post:
+      tags: [Authentication]
+      summary: Google sign-in compatibility route
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GoogleToken"
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /auth/forgot-password:
+    post:
+      tags: [Authentication]
+      summary: Begin password recovery
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EmailBody"
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /auth/reset-password:
+    post:
+      tags: [Authentication]
+      summary: Reset a password with an OTP
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ResetPassword"
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /auth/change-password:
+    post:
+      tags: [Authentication]
+      security:
+        - bearerAuth: []
+      summary: Change the authenticated user's password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChangePassword"
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /auth/me:
+    get:
+      tags: [Authentication]
+      security:
+        - bearerAuth: []
+      summary: Get the authenticated user
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /auth/refresh:
+    post:
+      tags: [Authentication]
+      summary: Rotate a refresh token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RefreshToken"
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /auth/logout:
+    post:
+      tags: [Authentication]
+      summary: Revoke a refresh-token session
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RefreshToken"
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /projects:
+    get:
+      tags: [Projects]
+      security:
+        - bearerAuth: []
+      summary: List owned projects
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+    post:
+      tags: [Projects]
+      security:
+        - bearerAuth: []
+      summary: Create a project
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProjectCreate"
+      responses:
+        "201":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /projects/{projectId}:
+    parameters:
+      - name: projectId
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      tags: [Projects]
+      security:
+        - bearerAuth: []
+      summary: Get an owned project
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+    patch:
+      tags: [Projects]
+      security:
+        - bearerAuth: []
+      summary: Update an owned project
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProjectUpdate"
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+    delete:
+      tags: [Projects]
+      security:
+        - bearerAuth: []
+      summary: Delete an owned project with no environments
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        "409":
+          description: Delete the project's environments before deleting it.
+        default:
+          $ref: "#/components/responses/Error"
+  /flags:
+    get:
+      tags: [Flags]
+      security:
+        - bearerAuth: []
+      summary: List owned flags
+      parameters:
+        - name: environmentId
+          in: query
+          required: false
+          schema:
+            type: string
+            pattern: "^[a-fA-F0-9]{24}$"
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+    post:
+      tags: [Flags]
+      security:
+        - bearerAuth: []
+      summary: Create a feature flag
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FlagCreate"
+      responses:
+        "201":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /flags/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      tags: [Flags]
+      security:
+        - bearerAuth: []
+      summary: Get an owned feature flag
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+    put:
+      tags: [Flags]
+      security:
+        - bearerAuth: []
+      summary: Update an owned feature flag
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FlagUpdate"
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+    delete:
+      tags: [Flags]
+      security:
+        - bearerAuth: []
+      summary: Delete an owned feature flag
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /identities:
+    post:
+      tags: [Identities]
+      security:
+        - bearerAuth: []
+      summary: Create an identity in an owned environment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/IdentityCreate"
+      responses:
+        "201":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /identities/{identifier}:
+    parameters:
+      - name: identifier
+        in: path
+        required: true
+        schema:
+          type: string
+          minLength: 1
+          maxLength: 128
+          pattern: "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+      - name: environmentId
+        in: query
+        required: true
+        schema:
+          type: string
+          pattern: "^[a-fA-F0-9]{24}$"
+    get:
+      tags: [Identities]
+      security:
+        - bearerAuth: []
+      summary: Get an identity in the selected environment
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+    put:
+      tags: [Identities]
+      security:
+        - bearerAuth: []
+      summary: Update an identity identifier or traits
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/IdentityUpdate"
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+    delete:
+      tags: [Identities]
+      security:
+        - bearerAuth: []
+      summary: Delete an identity from the selected environment
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /identities/{identifier}/traits:
+    parameters:
+      - name: identifier
+        in: path
+        required: true
+        schema:
+          type: string
+          minLength: 1
+          maxLength: 128
+          pattern: "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+      - name: environmentId
+        in: query
+        required: true
+        schema:
+          type: string
+          pattern: "^[a-fA-F0-9]{24}$"
+    put:
+      tags: [Identities]
+      security:
+        - bearerAuth: []
+      summary: Merge traits into an identity in the selected environment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/IdentityTraitsUpdate"
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /projects/{projectId}/environments:
+    parameters:
+      - name: projectId
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: "^[a-fA-F0-9]{24}$"
+    get:
+      tags: [Environments]
+      security:
+        - bearerAuth: []
+      summary: List environments in an owned project
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+    post:
+      tags: [Environments]
+      security:
+        - bearerAuth: []
+      summary: Create an environment in an owned project
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EnvironmentCreate"
+      responses:
+        "201":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /environments/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: "^[a-fA-F0-9]{24}$"
+    get:
+      tags: [Environments]
+      security:
+        - bearerAuth: []
+      summary: Get an owned environment
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+    put:
+      tags: [Environments]
+      security:
+        - bearerAuth: []
+      summary: Update an owned environment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EnvironmentUpdate"
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+    delete:
+      tags: [Environments]
+      security:
+        - bearerAuth: []
+      summary: Delete an owned environment and its keys, flags, and identities
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /environments/{id}/keys:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: "^[a-fA-F0-9]{24}$"
+    get:
+      tags: [Environment keys]
+      security:
+        - bearerAuth: []
+      summary: List key previews for an owned environment
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+    post:
+      tags: [Environment keys]
+      security:
+        - bearerAuth: []
+      summary: Create a key for an owned environment
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EnvironmentKeyCreate"
+      responses:
+        "201":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /environments/{id}/keys/{keyId}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: "^[a-fA-F0-9]{24}$"
+      - name: keyId
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: "^[a-fA-F0-9]{24}$"
+    delete:
+      tags: [Environment keys]
+      security:
+        - bearerAuth: []
+      summary: Revoke a key in an owned environment
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /evaluate:
+    post:
+      tags: [Evaluation]
+      security:
+        - environmentKey: []
+      summary: Evaluate all flags for an identity in the key's environment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EvaluationRequest"
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    environmentKey:
+      type: apiKey
+      in: header
+      name: X-Environment-Key
+  responses:
+    Success:
+      description: Request succeeded
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Envelope"
+    Error:
+      description: Request failed
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Envelope"
+  schemas:
+    Envelope:
+      type: object
+      required: [success, message, data]
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        data:
+          nullable: true
+    EmailBody:
+      type: object
+      required: [email]
+      properties:
+        email:
+          type: string
+          format: email
+    Credentials:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 8
+          maxLength: 72
+    EmailOtp:
+      allOf:
+        - $ref: "#/components/schemas/EmailBody"
+        - type: object
+          required: [otp]
+          properties:
+            otp:
+              type: string
+              pattern: '^\d{6}$'
+    GoogleToken:
+      type: object
+      required: [idToken]
+      properties:
+        idToken:
+          type: string
+    RefreshToken:
+      type: object
+      required: [refreshToken]
+      properties:
+        refreshToken:
+          type: string
+    ResetPassword:
+      allOf:
+        - $ref: "#/components/schemas/EmailOtp"
+        - type: object
+          required: [newPassword]
+          properties:
+            newPassword:
+              type: string
+              minLength: 8
+              maxLength: 72
+    ChangePassword:
+      type: object
+      required: [currentPassword, newPassword]
+      properties:
+        currentPassword:
+          type: string
+        newPassword:
+          type: string
+          minLength: 8
+          maxLength: 72
+    ProjectFields:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 100
+        slug:
+          type: string
+          maxLength: 100
+        description:
+          type: string
+          maxLength: 500
+    ProjectCreate:
+      allOf:
+        - $ref: "#/components/schemas/ProjectFields"
+        - type: object
+          required: [name]
+    ProjectUpdate:
+      allOf:
+        - $ref: "#/components/schemas/ProjectFields"
+        - type: object
+          minProperties: 1
+    FlagFields:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 100
+        environmentId:
+          type: string
+          pattern: "^[a-fA-F0-9]{24}$"
+        enabled:
+          type: boolean
+        targetingRules:
+          type: array
+          maxItems: 100
+          items:
+            $ref: "#/components/schemas/TargetingRule"
+    FlagCreate:
+      allOf:
+        - $ref: "#/components/schemas/FlagFields"
+        - type: object
+          required: [name, environmentId]
+    FlagUpdate:
+      allOf:
+        - $ref: "#/components/schemas/FlagFields"
+        - type: object
+          minProperties: 1
+    TargetingRule:
+      type: object
+      additionalProperties: false
+      required: [trait, operator, value, enabled]
+      properties:
+        trait:
+          type: string
+          maxLength: 128
+          pattern: "^[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*$"
+        operator:
+          type: string
+          enum:
+            - equals
+            - notEquals
+            - in
+            - notIn
+            - greaterThan
+            - greaterThanOrEqual
+            - lessThan
+            - lessThanOrEqual
+            - contains
+            - exists
+        value: {}
+        enabled:
+          type: boolean
+    EnvironmentCreate:
+      type: object
+      required: [name, type]
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+          enum: [development, staging, production]
+    EnvironmentUpdate:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+    EnvironmentKeyCreate:
+      type: object
+      properties:
+        label:
+          type: string
+          maxLength: 100
+    EvaluationRequest:
+      type: object
+      additionalProperties: false
+      required: [identifier]
+      properties:
+        identifier:
+          type: string
+          minLength: 1
+          maxLength: 128
+          pattern: "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+    IdentityTraits:
+      type: object
+      additionalProperties: true
+    IdentityCreate:
+      type: object
+      required: [environmentId, identifier]
+      properties:
+        environmentId:
+          type: string
+          pattern: "^[a-fA-F0-9]{24}$"
+        identifier:
+          type: string
+          minLength: 1
+          maxLength: 128
+          pattern: "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+        traits:
+          $ref: "#/components/schemas/IdentityTraits"
+    IdentityUpdate:
+      type: object
+      minProperties: 1
+      properties:
+        identifier:
+          type: string
+          minLength: 1
+          maxLength: 128
+          pattern: "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+        traits:
+          $ref: "#/components/schemas/IdentityTraits"
+    IdentityTraitsUpdate:
+      type: object
+      required: [traits]
+      properties:
+        traits:
+          $ref: "#/components/schemas/IdentityTraits"
