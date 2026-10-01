@@ -1,0 +1,655 @@
+{
+  "info": {
+    "name": "FeatureFlag Collections",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Check API health",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/health",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "health"]
+        }
+      }
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.collectionVariables.set('token', pm.response.json().data.token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Me",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "me"]
+            }
+          }
+        },
+        {
+          "name": "google-auth",
+          "request": {
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                { "key": "addTokenTo", "value": "header", "type": "string" },
+                { "key": "tokenName", "value": "google-aut", "type": "string" },
+                { "key": "useBrowser", "value": true, "type": "boolean" },
+                { "key": "authUrl", "value": "https://accounts.google.com/o/oauth2/v2/auth", "type": "string" },
+                { "key": "accessTokenUrl", "value": "https://oauth2.googleapis.com/token", "type": "string" },
+                { "key": "clientId", "value": "{{google_oauth_token_0t4c}}", "type": "string" },
+                { "key": "scope", "value": "openid email profile", "type": "string" }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idToken\": \"<your-google-id-token>\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/google-auth",
+              "host": ["{{baseUrl}}"],
+              "path": ["google-auth"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Projects",
+      "item": [
+        {
+          "name": "Get All Projects",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{json_web_token_0mjj}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/v1/projects",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "v1", "projects"]
+            }
+          }
+        },
+        {
+          "name": "Get All Projects-1",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{json_web_token_0mjj}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/v1/projects",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "v1", "projects"]
+            }
+          }
+        },
+        {
+          "name": "Create(POST) a Project",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{json_web_token_0o7r}}", "type": "string" }]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Checkout Service\",\n  \"slug\": \"checkout-service\",\n  \"description\": \"Feature flags for checkout\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/v1/projects",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "v1", "projects"]
+            }
+          }
+        },
+        {
+          "name": "Get a Specific Project(ID)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{json_web_token_1c9f}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/v1/projects/6abb8e910a65a25dcaf99b8d",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "v1", "projects", "6abb8e910a65a25dcaf99b8d"]
+            }
+          }
+        },
+        {
+          "name": "Update Specific Project's(ID) Body",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{json_web_token_1c9f}}", "type": "string" }]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Checkout API\",\n  \"description\": \"Updated description\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/v1/projects/6abb8e910a65a25dcaf99b8d",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "v1", "projects", "6abb8e910a65a25dcaf99b8d"]
+            }
+          }
+        },
+        {
+          "name": "Create(POST) a Specific(ID) project's Environment",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{json_web_token_0mjj}}", "type": "string" }]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Production\",\n  \"type\": \"production\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/v1/projects/6abb8e910a65a25dcaf99b8d/environments",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "v1", "projects", "6abb8e910a65a25dcaf99b8d", "environments"]
+            }
+          }
+        },
+        {
+          "name": "Delete Specific Project(ID)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{json_web_token_1c9f}}", "type": "string" }]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/v1/projects/6abb8e910a65a25dcaf99b8d",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "v1", "projects", "6abb8e910a65a25dcaf99b8d"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Environments",
+      "item": [
+        {
+          "name": "Get Specific Project(ID) Environments",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{json_web_token_1c9f}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/v1/projects/6abb8f9a0a65a25dcaf99b8e/environments",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "v1", "projects", "6abb8f9a0a65a25dcaf99b8e", "environments"]
+            }
+          }
+        },
+        {
+          "name": "Get Specific Environment via ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{json_web_token_0cnm}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/environments/{{environmentId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["environments", "{{environmentId}}"]
+            }
+          }
+        },
+        {
+          "name": "Edit(Put) Specific Environment Name",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{json_web_token_0cnm}}", "type": "string" }]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Production Server\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/environments/{{environmentId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["environments", "{{environmentId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Environment Via ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{json_web_token_0cnm}}", "type": "string" }]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/environments/{{environmentId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["environments", "{{environmentId}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Keys for a Specific Environment via ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{json_web_token_0cnm}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/environments/{{environmentId}}/keys",
+              "host": ["{{baseUrl}}"],
+              "path": ["environments", "{{environmentId}}", "keys"]
+            }
+          }
+        },
+        {
+          "name": "Create (POST) Enviroment key via Environment ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{json_web_token_0cnm}}", "type": "string" }]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"label\": \"Production evaluation key\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/environments/{{environmentId}}/keys",
+              "host": ["{{baseUrl}}"],
+              "path": ["environments", "{{environmentId}}", "keys"]
+            }
+          }
+        },
+        {
+          "name": "Delete Specific Environment Key via ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{json_web_token_0cnm}}", "type": "string" }]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/environments/{{environmentId}}/keys/{{keyId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["environments", "{{environmentId}}", "keys", "{{keyId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Flags",
+      "item": [
+        {
+          "name": "Get All Flags",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{json_web_token_0dbl}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/flags",
+              "host": ["{{baseUrl}}"],
+              "path": ["flags"]
+            }
+          }
+        },
+        {
+          "name": "Get Flags by Environment ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{json_web_token_0dbl}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/flags?environmentId={{environmentId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["flags"],
+              "query": [{ "key": "environmentId", "value": "{{environmentId}}" }]
+            }
+          }
+        },
+        {
+          "name": "Get Specific Flag by Flag ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{json_web_token_0dbl}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/flags/{{flagId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["flags", "{{flagId}}"]
+            }
+          }
+        },
+        {
+          "name": "Create (POST) Flag",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{json_web_token_0dbl}}", "type": "string" }]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"environmentId\": \"6abb8f9a0a65a25dcaf99b8e\",\n  \"name\": \"new_checkout\",\n  \"enabled\": false,\n  \"targetingRules\": [\n    {\n      \"trait\": \"plan\",\n      \"operator\": \"equals\",\n      \"value\": \"premium\",\n      \"enabled\": true\n    }\n  ]\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/flags",
+              "host": ["{{baseUrl}}"],
+              "path": ["flags"]
+            }
+          }
+        },
+        {
+          "name": "Replaces(PUT) a Specific Flag(ID) with new body",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{json_web_token_0dbl}}", "type": "string" }]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"enabled\": true,\n  \"targetingRules\": [\n    {\n      \"trait\": \"plan\",\n      \"operator\": \"equals\",\n      \"value\": \"premium\",\n      \"enabled\": true\n    }\n  ]\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/flags/{{flagId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["flags", "{{flagId}}"]
+            }
+          }
+        },
+        {
+          "name": "Deletes a Specific Flag with ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{json_web_token_0dbl}}", "type": "string" }]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/flags/{{flagId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["flags", "{{flagId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Evaluation",
+      "item": [
+        {
+          "name": "Post Evaluation using Environment key",
+          "request": {
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                { "key": "key", "value": "X-Environment-Key", "type": "string" },
+                { "key": "value", "value": "fk_7febb606fa31936811537678516b14fb294c8edbc815f9dc", "type": "string" },
+                { "key": "in", "value": "header", "type": "string" }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identifier\": \"user_123\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/evaluate",
+              "host": ["{{baseUrl}}"],
+              "path": ["evaluate"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Identity",
+      "item": [
+        {
+          "name": "Get Identity using Identifier and Environmental ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{json_web_token_0sdh}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/identities/user_123?environmentId={{environmentId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["identities", "user_123"],
+              "query": [{ "key": "environmentId", "value": "{{environmentId}}" }]
+            }
+          }
+        },
+        {
+          "name": "Create(POST) Identity",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{json_web_token_0sdh}}", "type": "string" }]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"environmentId\": \"6abb8f9a0a65a25dcaf99b8e\",\n  \"identifier\": \"user_123\",\n  \"traits\": {\n    \"plan\": \"premium\",\n    \"country\": \"Nigeria\"\n  }\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/identities",
+              "host": ["{{baseUrl}}"],
+              "path": ["identities"]
+            }
+          }
+        },
+        {
+          "name": "Replace(PUT) Identity using Identifier and Environment ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{json_web_token_0sdh}}", "type": "string" }]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identifier\": \"user_123\",\n  \"traits\": {\n    \"plan\": \"premium\",\n    \"country\": \"Nigeria\"\n  }\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/identities/{{identifier}}?environmentId={{environmentId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["identities", "{{identifier}}"],
+              "query": [{ "key": "environmentId", "value": "{{environmentId}}" }]
+            }
+          }
+        },
+        {
+          "name": "Replacing(PUT) Traits in an Identity using Identifier and Environment ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{json_web_token_0sdh}}", "type": "string" }]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"traits\": {\n    \"plan\": \"premium\",\n    \"age\": 25\n  }\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/identities/{{identifier}}/traits?environmentId={{environmentId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["identities", "{{identifier}}", "traits"],
+              "query": [{ "key": "environmentId", "value": "{{environmentId}}" }]
+            }
+          }
+        },
+        {
+          "name": "Deleting Identity using Identifier and Environment ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{json_web_token_0sdh}}", "type": "string" }]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/identities/{{identifier}}?environmentId={{environmentId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["identities", "{{identifier}}"],
+              "query": [{ "key": "environmentId", "value": "{{environmentId}}" }]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000/api/v1" },
+    { "key": "token", "value": "" },
+    { "key": "environmentId", "value": "" },
+    { "key": "flagId", "value": "" },
+    { "key": "identifier", "value": "" },
+    { "key": "keyId", "value": "" },
+    { "key": "email", "value": "" },
+    { "key": "password", "value": "" }
+  ]
+}
