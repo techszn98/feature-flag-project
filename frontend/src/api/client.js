@@ -6,44 +6,45 @@ export const API_BASE_URL = (
 ).replace(/\/+$/, "");
 
 async function request(path, options = {}) {
-  const headers = new Headers(options.headers || {});
-  const accessToken = getAccessToken();
+  const { auth = true, ...fetchOptions } = options;
+  const headers = new Headers(fetchOptions.headers || {});
+  const accessToken = auth ? getAccessToken() : null;
 
-  if (options.body !== undefined && !headers.has("Content-Type")) {
+  if (fetchOptions.body !== undefined && !headers.has("Content-Type")) {
     headers.set("Content-Type", "application/json");
   }
   if (accessToken) headers.set("Authorization", `Bearer ${accessToken}`);
 
   let response;
   try {
-    response = await fetch(`${API_BASE_URL}${path}`, { ...options, headers });
+    response = await fetch(`${API_BASE_URL}${path}`, { ...fetchOptions, headers });
   } catch {
-    throw new Error(
-      "Could not reach the API. Check your connection and try again.",
-    );
+    throw new Error("Could not reach the API. Check your connection and try again.");
   }
 
   const payload = await response.json().catch(() => ({}));
   if (!response.ok) {
-    if (response.status === 401) {
+    if (response.status === 401 && auth) {
       clearSession();
       if (!["/login", "/register"].includes(window.location.pathname)) {
         window.location.assign("/login");
       }
     }
-    throw new Error(
-      payload.message || "Something went wrong. Please try again.",
-    );
+    const error = new Error(payload.message || "Something went wrong. Please try again.");
+    error.status = response.status;
+    error.payload = payload;
+    throw error;
   }
-
   return payload;
 }
 
 export const api = {
-  get: (path) => request(path),
-  post: (path, body) =>
-    request(path, { method: "POST", body: JSON.stringify(body) }),
-  put: (path, body) =>
-    request(path, { method: "PUT", body: JSON.stringify(body) }),
-  delete: (path) => request(path, { method: "DELETE" }),
+  get: (path, options) => request(path, options),
+  post: (path, body, options) =>
+    request(path, { ...options, method: "POST", body: JSON.stringify(body) }),
+  put: (path, body, options) =>
+    request(path, { ...options, method: "PUT", body: JSON.stringify(body) }),
+  delete: (path, options) => request(path, { ...options, method: "DELETE" }),
 };
+
+

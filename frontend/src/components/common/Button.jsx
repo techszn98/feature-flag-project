@@ -7,8 +7,8 @@ export default function Button({
   return (
     <button
       className={`button ${className}`}
-      disabled={loading || props.disabled}
       {...props}
+      disabled={loading || props.disabled}
     >
       {loading ? (
         <span className="button-spinner" aria-hidden="true" />
