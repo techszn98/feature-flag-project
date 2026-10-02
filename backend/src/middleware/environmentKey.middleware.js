@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const EnvironmentKey = require("../modules/environment-keys/key.model");
 const Environment = require("../modules/environments/environment.model");
 const Project = require("../modules/project/project.model");
-const { hashKey } = require("../utils/generateKey");
+const { hashKey } = require("../utils/generatekey");
 const { AppError } = require("./error.middleware");
 
 const authenticateEnvironmentKey = async (req, res, next) => {

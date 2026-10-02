@@ -3,7 +3,7 @@ const Environment = require("../environments/environment.model");
 const Project = require("../project/project.model");
 const mongoose = require("mongoose");
 const { AppError } = require("../../middleware/error.middleware");
-const { generateKey } = require("../../utils/generateKey");
+const { generateKey } = require("../../utils/generatekey");
 
 const assertEnvironmentAccess = async (environmentId, userId) => {
   if (!mongoose.isValidObjectId(environmentId)) {
