@@ -11,10 +11,12 @@ import {
 } from "lucide-react";
 import { api } from "../../api/client.js";
 import AppLayout from "../../components/layout/AppLayout.jsx";
+import { Link } from "react-router-dom";
 
 const modules = [
   {
     id: "feature-flags",
+    to: "/feature-flags",
     title: "Feature flags",
     description: "Create and manage the flags owned by this client context.",
     endpoint: "GET /api/v1/flags · Bearer JWT",
@@ -23,6 +25,7 @@ const modules = [
   },
   {
     id: "environment-access",
+    to: "/environment-access",
     title: "Environment access",
     description: "Generate runtime credentials for an existing environment.",
     endpoint: "POST /api/v1/environments/:id/keys",
@@ -31,6 +34,7 @@ const modules = [
   },
   {
     id: "evaluation",
+    to: "/evaluation",
     title: "Evaluation workbench",
     description: "Evaluate flags for an identity and optional traits.",
     endpoint: "POST /api/v1/evaluate · X-Environment-Key",
@@ -39,6 +43,7 @@ const modules = [
   },
   {
     id: "identity-traits",
+    to: "/identity-traits",
     title: "Identity traits",
     description: "Update JSON traits for an identity using a runtime key.",
     endpoint: "PUT /api/v1/identities/:identifier/traits",
@@ -46,7 +51,6 @@ const modules = [
     tint: "rose",
   },
 ];
-
 export default function WorkspaceOverview() {
   const [connection, setConnection] = useState("checking");
   const [apiMessage, setApiMessage] = useState("");
@@ -109,20 +113,20 @@ export default function WorkspaceOverview() {
 
         <div className="module-grid">
           {modules.map(
-            ({ id, title, description, endpoint, icon: Icon, tint }) => (
-              <a className="module-card" id={id} href="#api-reference" key={id}>
-                <div className={`module-icon ${tint}`}>
-                  <Icon size={19} strokeWidth={1.8} />
-                </div>
-                <div className="module-heading">
-                  <h2>{title}</h2>
-                  <ArrowUpRight size={16} />
-                </div>
-                <p>{description}</p>
-                <code>{endpoint}</code>
-              </a>
-            ),
-          )}
+          ({ id, to, title, description, endpoint, icon: Icon, tint }) => (
+            <Link className="module-card" to={to} key={id}>
+              <div className={`module-icon ${tint}`}>
+                <Icon size={19} strokeWidth={1.8} />
+              </div>
+              <div className="module-heading">
+                <h2>{title}</h2>
+                <ArrowUpRight size={16} />
+              </div>
+              <p>{description}</p>
+              <code>{endpoint}</code>
+            </Link>
+          ),
+        )}
         </div>
 
         <section className="connection-panel" aria-live="polite">
