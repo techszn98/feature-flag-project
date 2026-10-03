@@ -1,6 +1,7 @@
 import { LogOut } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth.js";
 import Button from "../common/Button.jsx";
+import ThemeToggle from "../common/ThemeToggle.jsx";
 
 export default function TopBar() {
   const { user, signOut } = useAuth();
@@ -12,6 +13,7 @@ export default function TopBar() {
         <strong>Self-hosted API workspace</strong>
       </div>
       <div className="topbar-actions">
+        <ThemeToggle />
         <span className="session-indicator">
           <i /> Management session active
         </span>

@@ -17,9 +17,14 @@ async function request(path, options = {}) {
 
   let response;
   try {
-    response = await fetch(`${API_BASE_URL}${path}`, { ...fetchOptions, headers });
+    response = await fetch(`${API_BASE_URL}${path}`, {
+      ...fetchOptions,
+      headers,
+    });
   } catch {
-    throw new Error("Could not reach the API. Check your connection and try again.");
+    throw new Error(
+      "Could not reach the API. Check your connection and try again.",
+    );
   }
 
   const payload = await response.json().catch(() => ({}));
@@ -30,7 +35,9 @@ async function request(path, options = {}) {
         window.location.assign("/login");
       }
     }
-    const error = new Error(payload.message || "Something went wrong. Please try again.");
+    const error = new Error(
+      payload.message || "Something went wrong. Please try again.",
+    );
     error.status = response.status;
     error.payload = payload;
     throw error;
@@ -44,7 +51,7 @@ export const api = {
     request(path, { ...options, method: "POST", body: JSON.stringify(body) }),
   put: (path, body, options) =>
     request(path, { ...options, method: "PUT", body: JSON.stringify(body) }),
+  patch: (path, body, options) =>
+    request(path, { ...options, method: "PATCH", body: JSON.stringify(body) }),
   delete: (path, options) => request(path, { ...options, method: "DELETE" }),
 };
-
-

@@ -1,9 +1,16 @@
 import { Link, NavLink } from "react-router-dom";
-import { Activity, Braces, Fingerprint, Flag, KeyRound, LayoutDashboard } from "lucide-react";
+import {
+  Activity,
+  Braces,
+  Fingerprint,
+  Flag,
+  KeyRound,
+  LayoutDashboard,
+} from "lucide-react";
 
 const sections = [
   { label: "Workspace overview", icon: LayoutDashboard, to: "/dashboard" },
-  { label: "Feature flags", icon: Flag, to: "/feature-flags" },
+  { label: "Feature Flags", icon: Flag, to: "/feature-flags" },
   { label: "Environment access", icon: KeyRound, to: "/environment-access" },
   { label: "Evaluation", icon: Activity, to: "/evaluation" },
   { label: "Identity traits", icon: Fingerprint, to: "/identity-traits" },
@@ -13,7 +20,11 @@ const sections = [
 export default function Sidebar() {
   return (
     <aside className="sidebar">
-      <Link className="brand" to="/dashboard" aria-label="Feature Flag API home">
+      <Link
+        className="brand"
+        to="/dashboard"
+        aria-label="Feature Flag API home"
+      >
         <span className="brand-mark">F</span>
         <span>Feature Flag API</span>
       </Link>
@@ -22,7 +33,9 @@ export default function Sidebar() {
           <NavLink
             key={to}
             to={to}
-            className={({ isActive }) => `side-link${isActive ? " active" : ""}`}
+            className={({ isActive }) =>
+              `side-link${isActive ? " active" : ""}`
+            }
           >
             <Icon size={17} strokeWidth={1.8} />
             <span>{label}</span>
