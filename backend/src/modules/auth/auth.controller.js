@@ -1,14 +1,22 @@
-const authService = require('./auth.service');
-const googleService = require('../google-auth/google.service');
-const { sendSuccess } = require('../../utils/response');
-const { MESSAGES } = require('./auth.constants');
+const authService = require("./auth.service");
+const googleService = require("../google-auth/google.service");
+const { sendSuccess } = require("../../utils/response");
+const { MESSAGES } = require("./auth.constants");
 
 const register = async (req, res, next) => {
   try {
     const result = await authService.registerUser(req.body);
-    sendSuccess(res, 201, MESSAGES.REGISTRATION_SUCCESS, {
-      userId: result.userId,
-    });
+    sendSuccess(
+      res,
+      201,
+      result.verificationEmailSent
+        ? MESSAGES.REGISTRATION_SUCCESS
+        : MESSAGES.REGISTRATION_EMAIL_FAILED,
+      {
+        userId: result.userId,
+        verificationEmailSent: result.verificationEmailSent,
+      },
+    );
   } catch (err) {
     next(err);
   }
@@ -35,7 +43,7 @@ const resendOtp = async (req, res, next) => {
 const login = async (req, res, next) => {
   try {
     const data = await authService.loginUser(req.body);
-    sendSuccess(res, 200, 'Login successful', data);
+    sendSuccess(res, 200, "Login successful", data);
   } catch (err) {
     next(err);
   }
@@ -44,7 +52,7 @@ const login = async (req, res, next) => {
 const googleLogin = async (req, res, next) => {
   try {
     const result = await googleService.authenticateGoogleUser(req.body);
-    sendSuccess(res, 200, 'Google login successful', result);
+    sendSuccess(res, 200, "Google login successful", result);
   } catch (err) {
     next(err);
   }
@@ -80,7 +88,7 @@ const changePassword = async (req, res, next) => {
 const me = async (req, res, next) => {
   try {
     const user = await authService.getCurrentUser(req.user._id);
-    sendSuccess(res, 200, 'Current user fetched', { user });
+    sendSuccess(res, 200, "Current user fetched", { user });
   } catch (err) {
     next(err);
   }

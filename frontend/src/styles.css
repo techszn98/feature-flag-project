@@ -614,6 +614,39 @@ a {
     border 150ms ease,
     box-shadow 150ms ease;
 }
+.password-input-wrap {
+  position: relative;
+  min-width: 0;
+}
+.password-input-wrap input {
+  padding-right: 51px;
+}
+.password-visibility {
+  position: absolute;
+  top: 50%;
+  right: 4px;
+  display: grid;
+  width: 40px;
+  height: 40px;
+  transform: translateY(-50%);
+  place-items: center;
+  border: 0;
+  border-radius: 5px;
+  color: #74829a;
+  background: transparent;
+  cursor: pointer;
+  transition:
+    color 150ms ease,
+    background 150ms ease;
+}
+.password-visibility:hover {
+  color: var(--blue);
+  background: #edf0ff;
+}
+.password-visibility:focus-visible {
+  outline: 3px solid #9aaaff;
+  outline-offset: 1px;
+}
 .field input::placeholder {
   color: #95a2b7;
 }
@@ -633,6 +666,46 @@ a {
   height: 46px;
   margin-top: 1px;
   font-size: 13px;
+}
+.resend-code {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 7px 10px;
+  margin-top: -6px;
+  padding: 9px 11px;
+  border: 1px solid #e0e6f0;
+  border-radius: 6px;
+  background: #f8f9fc;
+}
+.resend-code > p {
+  margin: 0;
+  color: #75839a;
+  font-size: 10px;
+  line-height: 1.45;
+}
+.resend-code .resend-code-button {
+  min-height: 38px;
+  padding: 0 9px;
+  color: var(--blue);
+  background: transparent;
+  font-size: 11px;
+  white-space: nowrap;
+}
+.resend-code .resend-code-button:hover:not(:disabled) {
+  background: #e9edff;
+}
+.resend-code .resend-code-button:disabled {
+  color: #8995aa;
+  opacity: 1;
+}
+.resend-code > .resend-success,
+.resend-code > .error-message {
+  grid-column: 1 / -1;
+}
+.resend-code > .resend-success {
+  padding-top: 2px;
+  color: #16805d;
 }
 .error-message {
   margin: -3px 0 0;
@@ -946,7 +1019,6 @@ a {
     transition-duration: 0.01ms !important;
   }
 }
-
 
 /* ===== Shared form + panel styles (Member 3) ===== */
 .panel {
