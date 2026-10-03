@@ -6,6 +6,7 @@ import Register from "../pages/auth/Register.jsx";
 import WorkspaceOverview from "../pages/dashboard/WorkspaceOverview.jsx";
 import EnvironmentAccess from "../pages/environments/EnvironmentAccess.jsx";
 import Evaluation from "../pages/evaluation/Evaluation.jsx";
+import IdentityTraits from "../pages/identities/IdentityTraits.jsx";
 
 export default function AppRoutes() {
   return (
@@ -20,6 +21,7 @@ export default function AppRoutes() {
       <Route path="*" element={<Navigate to="/dashboard" replace />} />
       <Route path="/environment-access" element={<EnvironmentAccess />} />
       <Route path="/evaluation" element={<Evaluation />} />
+      <Route path="/identity-traits" element={<IdentityTraits />} />
     </Routes>
   );
 }
