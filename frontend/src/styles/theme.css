@@ -215,6 +215,39 @@
   border-color: #2c3e58;
   background-color: #142238;
 }
+:root[data-theme="dark"] .api-reference-card {
+  border-color: #2c3e58;
+  background: linear-gradient(
+    180deg,
+    rgba(20, 34, 56, 0.96),
+    rgba(12, 22, 37, 0.96)
+  );
+  box-shadow: 0 12px 26px rgba(2, 6, 15, 0.28);
+}
+:root[data-theme="dark"] .api-reference-card:hover,
+:root[data-theme="dark"] .api-reference-card:focus-visible {
+  border-color: #7187ff;
+  box-shadow: 0 16px 30px rgba(7, 18, 34, 0.42);
+}
+:root[data-theme="dark"] .reference-cta {
+  border-color: #304a73;
+  background: rgba(38, 62, 100, 0.8);
+  color: #dfe9ff;
+}
+:root[data-theme="dark"] .api-reference-card .section-eyebrow {
+  color: #9eaefc;
+}
+:root[data-theme="dark"] .api-reference-card h2 {
+  color: #edf3ff;
+}
+:root[data-theme="dark"] .reference-strip {
+  border-color: #2c3e58;
+  background: #0e1a2c;
+}
+:root[data-theme="dark"] .reference-strip code {
+  color: #dfe9ff;
+  background: #182b44;
+}
 :root[data-theme="dark"] .module-card:hover,
 :root[data-theme="dark"] .panel:hover,
 :root[data-theme="dark"] .connection-panel:hover {
