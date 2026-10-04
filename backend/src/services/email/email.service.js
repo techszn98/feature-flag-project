@@ -1,4 +1,3 @@
-const transporter = require('../../config/mail');
 const { email: emailConfig } = require('../../config/env');
 const {
   welcomeTemplate,
@@ -8,29 +7,48 @@ const {
   googleWelcomeTemplate,
 } = require('./email.templates');
 
-const from = {
-  name: emailConfig.fromName,
-  address: emailConfig.fromAddress,
-};
+const BREVO_URL = 'https://api.brevo.com/v3/smtp/email';
 
 /**
- * Dispatch an email safely without leaking credentials or terminating parent process on network errors
+ * Send over HTTPS (Brevo API). Render's free tier blocks SMTP ports,
+ * but outbound HTTPS works. Never throws: returns { success, ... }.
  */
-async function sendMailSafely(options) {
+async function sendMailSafely({ to, subject, html, text }) {
   if (process.env.NODE_ENV === 'test') {
-    // In test environment, skip external SMTP to prevent hitting third-party rate limits
     return { success: true, messageId: 'test-mock-message-id' };
   }
 
+  const apiKey = process.env.BREVO_API_KEY;
+  if (!apiKey) {
+    console.error('[EmailService] BREVO_API_KEY is not set');
+    return { success: false, error: 'Email provider is not configured' };
+  }
+
   try {
-    const info = await transporter.sendMail({
-      from,
-      ...options,
+    const response = await fetch(BREVO_URL, {
+      method: 'POST',
+      headers: {
+        'api-key': apiKey,
+        'content-type': 'application/json',
+        accept: 'application/json',
+      },
+      body: JSON.stringify({
+        sender: { name: emailConfig.fromName, email: emailConfig.fromAddress },
+        to: [{ email: to }],
+        subject,
+        htmlContent: html,
+        textContent: text,
+      }),
+      signal: AbortSignal.timeout(10000), // don't let registration hang
     });
-    return { success: true, messageId: info.messageId };
+
+    const body = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      throw new Error(`Brevo ${response.status}: ${body.message || 'request failed'}`);
+    }
+    return { success: true, messageId: body.messageId };
   } catch (error) {
-    // Log the operational error server-side without exposing credentials to caller
-    console.error(`[EmailService] Failed to send email to ${options.to}:`, error.message);
+    console.error(`[EmailService] Failed to send email to ${to}:`, error.message);
     return { success: false, error: error.message };
   }
 }
