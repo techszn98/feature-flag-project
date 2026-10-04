@@ -113,20 +113,20 @@ export default function WorkspaceOverview() {
 
         <div className="module-grid">
           {modules.map(
-          ({ id, to, title, description, endpoint, icon: Icon, tint }) => (
-            <Link className="module-card" to={to} key={id}>
-              <div className={`module-icon ${tint}`}>
-                <Icon size={19} strokeWidth={1.8} />
-              </div>
-              <div className="module-heading">
-                <h2>{title}</h2>
-                <ArrowUpRight size={16} />
-              </div>
-              <p>{description}</p>
-              <code>{endpoint}</code>
-            </Link>
-          ),
-        )}
+            ({ id, to, title, description, endpoint, icon: Icon, tint }) => (
+              <Link className="module-card" to={to} key={id}>
+                <div className={`module-icon ${tint}`}>
+                  <Icon size={19} strokeWidth={1.8} />
+                </div>
+                <div className="module-heading">
+                  <h2>{title}</h2>
+                  <ArrowUpRight size={16} />
+                </div>
+                <p>{description}</p>
+                <code>{endpoint}</code>
+              </Link>
+            ),
+          )}
         </div>
 
         <section className="connection-panel" aria-live="polite">
@@ -175,21 +175,26 @@ export default function WorkspaceOverview() {
           </div>
         </section>
 
-        <section className="api-reference" id="api-reference">
-          <div className="reference-heading">
-            <div>
-              <div className="section-eyebrow">CONNECTED SURFACE</div>
-              <h2>API reference</h2>
+        <Link to="/api-reference" className="api-reference-card">
+          <section className="api-reference" id="api-reference">
+            <div className="reference-heading">
+              <div>
+                <div className="section-eyebrow">CONNECTED SURFACE</div>
+                <h2>API reference</h2>
+              </div>
+              <div className="reference-cta">
+                <span>Open API reference</span>
+                <ArrowUpRight size={15} />
+              </div>
             </div>
-            <span>AUTHENTICATION · MANAGEMENT · RUNTIME</span>
-          </div>
-          <div className="reference-strip">
-            <code>POST /auth/register</code>
-            <code>POST /auth/login</code>
-            <code>GET /auth/me</code>
-            <code>POST /auth/google</code>
-          </div>
-        </section>
+            <div className="reference-strip">
+              <code>POST /auth/register</code>
+              <code>POST /auth/login</code>
+              <code>GET /auth/me</code>
+              <code>POST /auth/google</code>
+            </div>
+          </section>
+        </Link>
         <footer className="workspace-footer">
           <span>FEATURE FLAG API</span>
           <span>Runtime credentials stay separate from management access.</span>
