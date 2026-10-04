@@ -103,6 +103,46 @@ describe("Member 6 - Auth & Account Security Flows", () => {
         .expect(400);
     });
 
+    it("sends the welcome email only after successful OTP verification", async () => {
+      const originalWelcome = emailService.sendWelcomeEmail;
+      let welcomeCalls = 0;
+      emailService.sendWelcomeEmail = async () => {
+        welcomeCalls += 1;
+        return { success: true };
+      };
+
+      try {
+        await request(app)
+          .post("/api/v1/auth/register")
+          .send(testUser)
+          .expect(201);
+
+        assert.equal(welcomeCalls, 0);
+
+        const plainOtp = "123456";
+        await User.findOneAndUpdate(
+          { email: testUser.email },
+          {
+            emailVerificationOtpHash: hashOtp(plainOtp),
+            emailVerificationOtpExpiresAt: new Date(
+              Date.now() + 10 * 60 * 1000,
+            ),
+            emailVerificationAttempts: 0,
+          },
+        );
+
+        const res = await request(app)
+          .post("/api/v1/auth/verify-email")
+          .send({ email: testUser.email, otp: plainOtp })
+          .expect(200);
+
+        assert.equal(res.body.success, true);
+        assert.equal(welcomeCalls, 1);
+      } finally {
+        emailService.sendWelcomeEmail = originalWelcome;
+      }
+    });
+
     it("verifies email with valid OTP and clears OTP fields", async () => {
       await request(app)
         .post("/api/v1/auth/register")
