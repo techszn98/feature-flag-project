@@ -459,6 +459,20 @@
 :root[data-theme="dark"] .home-brand {
   color: #edf3ff;
 }
+:root[data-theme="dark"] .public-api-shell .home-button-secondary {
+  border-color: #33455f;
+  color: #e1eafa;
+  background: #17273e;
+}
+:root[data-theme="dark"] .public-api-shell .public-api-home-link {
+  border-color: #33455f;
+  color: #c5d1e3;
+  background: #17273e;
+}
+:root[data-theme="dark"] .public-api-shell .public-api-home-link:hover {
+  color: #fff;
+  background: #273c5c;
+}
 :root[data-theme="dark"] .home-nav-links a,
 :root[data-theme="dark"] .home-sign-in {
   color: #b6c4d8;

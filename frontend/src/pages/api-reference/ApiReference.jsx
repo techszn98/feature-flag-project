@@ -1,4 +1,4 @@
-import { Braces, Layers3 } from "lucide-react";
+import { Braces, Home, Layers3 } from "lucide-react";
 import { Link } from "react-router-dom";
 import AppLayout from "../../components/layout/AppLayout.jsx";
 import CodeBlock from "../../components/common/CodeBlock.jsx";
@@ -126,7 +126,14 @@ function PublicReferenceLayout({ children }) {
           </Link>
           <nav className="public-api-nav" aria-label="Documentation navigation">
             <ThemeToggle variant="home" />
-            <Link to="/">Homepage</Link>
+            <Link
+              className="public-api-home-link"
+              to="/"
+              aria-label="Homepage"
+              title="Homepage"
+            >
+              <Home size={18} aria-hidden="true" />
+            </Link>
             <Link className="home-button home-button-secondary" to="/login">
               Sign In
             </Link>
