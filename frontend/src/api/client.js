@@ -42,7 +42,12 @@ async function request(path, options = {}) {
     error.payload = payload;
     throw error;
   }
-  return payload;
+
+  return {
+    ...payload,
+    status: response.status,
+    data: payload.data ?? payload,
+  };
 }
 
 export const api = {

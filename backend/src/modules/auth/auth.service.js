@@ -49,9 +49,6 @@ const registerUser = async ({ email, password }) => {
     to: user.email,
     otp: rawOtp,
   });
-  emailService.sendWelcomeEmail({ to: user.email }).catch((err) => {
-    console.error("Failed to send welcome email:", err);
-  });
 
   return {
     userId: user._id,
@@ -113,6 +110,10 @@ const verifyEmail = async ({ email, otp }) => {
   user.emailVerificationOtpExpiresAt = undefined;
   user.emailVerificationAttempts = 0;
   await user.save();
+
+  emailService.sendWelcomeEmail({ to: user.email }).catch((err) => {
+    console.error("Failed to send post-verification welcome email:", err);
+  });
 
   return { verified: true, user: toPublicUser(user) };
 };
